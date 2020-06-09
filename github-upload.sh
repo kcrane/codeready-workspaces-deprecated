@@ -59,8 +59,8 @@ while (( "$#" )) ; do
 done
 
 function check_resp {
-    GITHUB_RESP="$(echo $1 | jq | sed \$d)"
-    HTTP_CODE="$(echo $1 | jq | tail -n1)"
+    GITHUB_RESP="$(echo $1 | jq -r . | sed \$d)"
+    HTTP_CODE="$(echo $1 | jq -r . | tail -n1)"
     if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -gt 300 ]  ; then
         echo -e "ERROR: Failed calling github api with http code $HTTP_CODE: $GITHUB_RESP"
         exit 1;
