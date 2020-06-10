@@ -25,8 +25,8 @@ echo "CodeReady Workspaces :: Stacks :: Language Servers :: PHP Dependencies"
 echo ""
 
 mkdir -p target/php-ls
-docker build . -t $PHP_LS_IMAGE -f php-ls.Dockerfile
-docker run -v $SCRIPT_DIR/target/php-ls:/php $PHP_LS_IMAGE sh -c "
+podman build . -t $PHP_LS_IMAGE -f php-ls.Dockerfile
+podman run -v $SCRIPT_DIR/target/php-ls:/php:z $PHP_LS_IMAGE sh -c "
     cd /php
     /usr/local/bin/composer require jetbrains/phpstorm-stubs:dev-master
     /usr/local/bin/composer require felixfbecker/language-server:${PHP_LS_VERSION}
@@ -39,8 +39,8 @@ docker run -v $SCRIPT_DIR/target/php-ls:/php $PHP_LS_IMAGE sh -c "
 tar -czf target/codeready-workspaces-stacks-language-servers-dependencies-php-$(uname -m).tar.gz -C target/php-ls .
 
 mkdir -p target/php-xdebug
-docker build . -t $PHP_XDEBUG_IMAGE -f xdebug.Dockerfile
-docker run -v $SCRIPT_DIR/target/php-xdebug:/xd $PHP_XDEBUG_IMAGE sh -c "
+podman build . -t $PHP_XDEBUG_IMAGE -f xdebug.Dockerfile
+podman run -v $SCRIPT_DIR/target/php-xdebug:/xd:z $PHP_XDEBUG_IMAGE sh -c "
     mkdir -p /xd/etc /xd/usr/share/doc/pecl/xdebug /xd/usr/lib64/php/modules/
     cp /etc/php.ini /xd/etc/php.ini
     cp -r /usr/share/doc/pecl/xdebug/* /xd/usr/share/doc/pecl/xdebug/
@@ -49,4 +49,4 @@ docker run -v $SCRIPT_DIR/target/php-xdebug:/xd $PHP_XDEBUG_IMAGE sh -c "
     "
 tar -czf target/codeready-workspaces-stacks-language-servers-dependencies-php-xdebug-$(uname -m).tar.gz -C target/php-xdebug .
 
-docker rmi -f $PHP_LS_IMAGE $PHP_BUILDER_IMAGE
+podman rmi -f $PHP_LS_IMAGE $PHP_BUILDER_IMAGE

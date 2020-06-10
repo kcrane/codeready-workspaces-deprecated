@@ -24,9 +24,10 @@ echo "CodeReady Workspaces :: Stacks :: Language Servers :: Python Dependencies"
 echo ""
 
 mkdir -p target/python-ls
-docker run -v $SCRIPT_DIR/target/python-ls:/python -u root $PYTHON_IMAGE_VERSION sh -c "
+podman run -v $SCRIPT_DIR/target/python-ls:/python:z -u root $PYTHON_IMAGE_VERSION sh -c "
     pip install --upgrade pip
-    pip install python-language-server[all]==${PYTHON_LS_VERSION} --target=/python
+    pip install python-language-server[all]==${PYTHON_LS_VERSION} --target=/tmp/python
+    mv /tmp/python/* /python 2> /dev/null
     chmod -R 777 /python
     "
 tar -czf target/codeready-workspaces-stacks-language-servers-dependencies-python-$(uname -m).tar.gz -C target/python-ls .
