@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 
 FILENAMES=""
 OVERWRITE_FILES="false"
