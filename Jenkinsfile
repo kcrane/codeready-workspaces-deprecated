@@ -30,7 +30,7 @@ timeout(120) {
 			poll: true,
 			extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${CRW_path}"]], 
 			submoduleCfg: [], 
-			userRemoteConfigs: [[url: "https://github.com/redhat-developer/${CRW_path}.git"]]])
+			userRemoteConfigs: [[url: "https://github.com/kcrane/${CRW_path}.git"]]])
 		// sh "/usr/bin/time -v ${CRW_path}/build.sh"
 		// archiveArtifacts fingerprint: true, artifacts: "${CRW_path}/*/target/*.tar.*"
                 
