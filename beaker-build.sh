@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR=$(cd "$(dirname "$0")" || exit; pwd)
+cd $SCRIPT_DIR
 JOBIDS=""
 for a in x86_64 s390x ppc64le ; do
     sed 's|${ARCH}|'$a'|g;s|${GITHUB_TOKEN}|'${GITHUB_TOKEN}'|g;s|&|&amp;|g' beaker-job.xml > beaker-job-$a.xml
