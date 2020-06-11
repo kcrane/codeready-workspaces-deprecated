@@ -9,6 +9,6 @@ for a in x86_64 s390x ppc64le ; do
     echo "${a} job submitted: $JOBID"
     rm beaker-job-$a.xml
 done
-for j in $JOBIDS ; do
-    ; # bkr job-watch $j   # will block until finished
-done
+#for j in $JOBIDS ; do
+#    bkr job-watch $j   # will block until finished
+#done
