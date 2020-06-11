@@ -31,8 +31,8 @@ timeout(120) {
 			extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${CRW_path}"]], 
 			submoduleCfg: [], 
 			userRemoteConfigs: [[url: "https://github.com/redhat-developer/${CRW_path}.git"]]])
-		sh "/usr/bin/time -v ${CRW_path}/build.sh"
-		archiveArtifacts fingerprint: true, artifacts: "${CRW_path}/*/target/*.tar.*"
+		// sh "/usr/bin/time -v ${CRW_path}/build.sh"
+		// archiveArtifacts fingerprint: true, artifacts: "${CRW_path}/*/target/*.tar.*"
                 
                 withCredentials([string(credentialsId:'devstudio-release.token', variable: 'GITHUB_TOKEN'), 
                                 file(credentialsId: 'crw-build.keytab', variable: 'CRW_KEYTAB')]) {
@@ -41,7 +41,7 @@ timeout(120) {
                     export KRB5CCNAME=/var/tmp/crw-build_ccache
                     kinit "crw-build/codeready-workspaces-jenkins.rhev-ci-vms.eng.rdu2.redhat.com@REDHAT.COM" -kt ''' + CRW_KEYTAB + '''
                     klist # verify working
-                    ${CRW_path}/beaker-build.sh
+                    ''' + CRW_path + '''/beaker-build.sh
 '''
                 sh BOOTSTRAP
                 }
