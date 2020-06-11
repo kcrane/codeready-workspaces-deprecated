@@ -41,6 +41,7 @@ timeout(120) {
                     export KRB5CCNAME=/var/tmp/crw-build_ccache
                     kinit "crw-build/codeready-workspaces-jenkins.rhev-ci-vms.eng.rdu2.redhat.com@REDHAT.COM" -kt ''' + CRW_KEYTAB + '''
                     klist # verify working
+                    echo token: $GITHUB_TOKEN
                     ''' + CRW_path + '''/beaker-build.sh
 '''
                 sh BOOTSTRAP

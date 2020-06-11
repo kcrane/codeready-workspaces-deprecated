@@ -10,5 +10,5 @@ for a in x86_64 s390x ppc64le ; do
     rm beaker-job-$a.xml
 done
 for j in $JOBIDS ; do
-    # bkr job-watch $j   # will block until finished
+    ; # bkr job-watch $j   # will block until finished
 done
