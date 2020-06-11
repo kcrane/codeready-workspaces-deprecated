@@ -36,11 +36,14 @@ timeout(120) {
                 
                 withCredentials([string(credentialsId:'devstudio-release.token', variable: 'GITHUB_TOKEN'), 
                                 file(credentialsId: 'crw-build.keytab', variable: 'CRW_KEYTAB')]) {
+                    def BOOTSTRAP = '''#!/bin/bash -xe
                     # initialize kerberos
                     export KRB5CCNAME=/var/tmp/crw-build_ccache
                     kinit "crw-build/codeready-workspaces-jenkins.rhev-ci-vms.eng.rdu2.redhat.com@REDHAT.COM" -kt ''' + CRW_KEYTAB + '''
                     klist # verify working
-                    sh "${CRW_path}/beaker-build.sh" 
+                    ${CRW_path}/beaker-build.sh
+'''
+                sh BOOTSTRAP
                 }
 		SHA_CRW = sh(returnStdout:true,script:"cd ${CRW_path}/ && git rev-parse --short=4 HEAD").trim()
 		echo "Built ${CRW_path} from SHA: ${SHA_CRW}"
