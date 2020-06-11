@@ -33,7 +33,15 @@ timeout(120) {
 			userRemoteConfigs: [[url: "https://github.com/redhat-developer/${CRW_path}.git"]]])
 		sh "/usr/bin/time -v ${CRW_path}/build.sh"
 		archiveArtifacts fingerprint: true, artifacts: "${CRW_path}/*/target/*.tar.*"
-
+                
+                withCredentials([string(credentialsId:'devstudio-release.token', variable: 'GITHUB_TOKEN'), 
+                                file(credentialsId: 'crw-build.keytab', variable: 'CRW_KEYTAB')]) {
+                    # initialize kerberos
+                    export KRB5CCNAME=/var/tmp/crw-build_ccache
+                    kinit "crw-build/codeready-workspaces-jenkins.rhev-ci-vms.eng.rdu2.redhat.com@REDHAT.COM" -kt ''' + CRW_KEYTAB + '''
+                    klist # verify working
+                    sh "${CRW_path}/beaker-build.sh" 
+                }
 		SHA_CRW = sh(returnStdout:true,script:"cd ${CRW_path}/ && git rev-parse --short=4 HEAD").trim()
 		echo "Built ${CRW_path} from SHA: ${SHA_CRW}"
 		sh "df -h; du -sch . ${WORKSPACE} /tmp 2>/dev/null || true"

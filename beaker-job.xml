@@ -1,0 +1,29 @@
+<!-- specification:  https://beaker-project.org/docs/_downloads/beaker-job.rng -->
+<!-- documentation:  https://docs.engineering.redhat.com/display/HTD/Documentation+-+Beaker -->
+<job>
+  <whiteboard>
+  CRW Language Servers on ${ARCH}
+  </whiteboard>
+    <recipeSet>
+      <recipe>
+        <distroRequires>
+            <and>
+                <distro_family op="=" value="RedHatEnterpriseLinux8"/>
+		<distro_arch op="=" value="${ARCH}"/>
+            </and>
+        </distroRequires>
+        <hostRequires>
+            <and>
+		<arch op="=" value="${ARCH}"/>
+                <diskspace op=">=" value="20000000000"/>
+            </and>
+        </hostRequires>
+       <task name="/distribution/command">
+            <params>
+		    <param name="CMDS_TO_RUN" value="yum install -y git tar curl jq podman && git clone https://github.com/kcrane/codeready-workspaces-deprecated && cd codeready-workspaces-deprecated && ./build.sh && export GITHUB_TOKEN='${GITHUB_TOKEN}' && ./github-upload.sh -r kcrane/codeready-workspaces-deprecated -t latest -n 'latest build' master -o */target/*.tar.gz"/>
+            </params>
+        </task>
+	<!-- <reservesys when="onfail" /> -->
+      </recipe>
+    </recipeSet>
+</job>
