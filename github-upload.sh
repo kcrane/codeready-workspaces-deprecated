@@ -48,7 +48,7 @@ while (( "$#" )) ; do
 	    echo "    -n   optional.  create new release if tag does not exist.  optional description and commitish (sha or branch) to base release on"
 	    echo "    -o   overwrite assets if already exist in release"
 	    echo ""
-	    echo "Example: github-upload.sh -r redhat-developer/codeready-workspaces-deprecated -t 2.2.0.GA -n '2.2.0.GA release' master -o *.tar.gz"
+	    echo "Example: export GITHUB_TOKEN="PAT_TOKEN_FROM_GITHUB"; github-upload.sh -r redhat-developer/codeready-workspaces-deprecated -t 2.2.0.GA -n '2.2.0.GA release' master -o *.tar.gz"
             exit 0
             ;;
         *)
@@ -69,7 +69,7 @@ function check_resp {
 
 # Check parameters are valid
 GITHUB_AUTH="Authorization: token $GITHUB_TOKEN"
-GITHUB_RESP="$(curl -sH "$GITHUB_AUTH" -w "%{http_code}" "https://api.github.com/repos/${GITHUB_REPO}" 2> /dev/null)" || { echo "ERROR: Unable to reach github"; exit 1; }
+GITHUB_RESP="$(curl -sLH "$GITHUB_AUTH" -w "%{http_code}" "https://api.github.com/repos/${GITHUB_REPO}" 2> /dev/null)" || { echo "ERROR: Unable to reach github"; exit 1; }
 check_resp "$GITHUB_RESP"
 for f in $FILENAMES ; do
     [ -e "$f" ] || { echo "ERROR: file does not exist $f"; exit 1; }
@@ -87,7 +87,7 @@ JSON_BODY="$(cat << MYEOF
 }
 MYEOF
 )"
-GITHUB_RESP="$(curl -sH "$GITHUB_AUTH" -w "%{http_code}" "https://api.github.com/repos/${GITHUB_REPO}/releases" 2> /dev/null)" 
+GITHUB_RESP="$(curl -sLH "$GITHUB_AUTH" -w "%{http_code}" "https://api.github.com/repos/${GITHUB_REPO}/releases" 2> /dev/null)" 
 check_resp "$GITHUB_RESP"
 RELEASE_RESP="$(echo $GITHUB_RESP | jq -r '.[] | select(.tag_name=="'$GITHUB_TAG'")')"
 RELEASE_ID=$(echo "$RELEASE_RESP" | jq -r '.id')
@@ -97,7 +97,7 @@ if [ -z "$RELEASE_ID" ] ; then
 	exit 1
     fi
     echo "Creating Release $GITHUB_TAG..."
-    GITHUB_RESP="$(curl -sH "$GITHUB_AUTH"  -H "Content-Type: application/json" -d "$JSON_BODY" -w "%{http_code}" "https://api.github.com/repos/${GITHUB_REPO}/releases")"
+    GITHUB_RESP="$(curl -sLH "$GITHUB_AUTH"  -H "Content-Type: application/json" -d "$JSON_BODY" -w "%{http_code}" "https://api.github.com/repos/${GITHUB_REPO}/releases")"
     check_resp "$GITHUB_RESP"
     RELEASE_RESP="$GITHUB_RESP"
     RELEASE_ID="$(echo "$RELEASE_RESP" | jq -r '.id')"
