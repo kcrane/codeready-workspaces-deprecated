@@ -37,6 +37,9 @@ timeout(120) {
                 withCredentials([string(credentialsId:'devstudio-release.token', variable: 'GITHUB_TOKEN'), 
                                 file(credentialsId: 'crw-build.keytab', variable: 'CRW_KEYTAB')]) {
                     def BOOTSTRAP = '''#!/bin/bash -xe
+                    # create .k5login file
+                    echo "crw-build/codeready-workspaces-jenkins.rhev-ci-vms.eng.rdu2.redhat.com@REDHAT.COM" > ~/.k5login
+                    chmod 644 ~/.k5login && chown ''' + USER + ''' ~/.k5login
                     # initialize kerberos
                     export KRB5CCNAME=/var/tmp/crw-build_ccache
                     kinit "crw-build/codeready-workspaces-jenkins.rhev-ci-vms.eng.rdu2.redhat.com@REDHAT.COM" -kt ''' + CRW_KEYTAB + '''
